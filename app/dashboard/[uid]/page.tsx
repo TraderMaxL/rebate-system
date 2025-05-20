@@ -61,7 +61,7 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
   }, [params.uid, router]);
   
   const formatNumber = (num: number) => {
-    return num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   
   const handleLogout = () => {
@@ -157,12 +157,12 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-gray-500">总交易金额</h2>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">¥ {formatNumber(userData.stats.totalTradeAmount)}</p>
+            <p className="mt-2 text-2xl font-semibold text-gray-900">$ {formatNumber(userData.stats.totalTradeAmount)}</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-gray-500">总手续费</h2>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">¥ {formatNumber(userData.stats.totalFees)}</p>
+            <p className="mt-2 text-2xl font-semibold text-gray-900">$ {formatNumber(userData.stats.totalFees)}</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
@@ -172,7 +172,7 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
           
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-gray-500">获得返佣</h2>
-            <p className="mt-2 text-2xl font-semibold text-green-600">¥ {formatNumber(userData.stats.totalRebate)}</p>
+            <p className="mt-2 text-2xl font-semibold text-green-600">$ {formatNumber(userData.stats.totalRebate)}</p>
           </div>
         </div>
         
@@ -224,13 +224,13 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ¥ {formatNumber(user.tradeAmount)}
+                        $ {formatNumber(user.tradeAmount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ¥ {formatNumber(user.fees)}
+                        $ {formatNumber(user.fees)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
-                        ¥ {formatNumber(user.rebate)}
+                        $ {formatNumber(user.rebate)}
                       </td>
                     </tr>
                   ))}
