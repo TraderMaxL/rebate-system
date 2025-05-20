@@ -1,3 +1,79 @@
+# 返佣后台系统 MVP
+
+这是一个简单的返佣后台系统的MVP实现，用于实时统计和展示用户的交易数据与返佣奖励。系统支持一级返佣结构。
+
+## 功能特点
+
+- 用户登录（模拟登录，无需密码）
+- 个人交易数据展示：总交易额、总手续费
+- 邀请情况展示：
+  - 邀请人数（一级）
+  - 邀请用户产生的返佣总额（基于其交易手续费）
+- 返佣规则：获得被邀请用户交易手续费的20%作为返佣
+- 导出报表（CSV格式）
+
+## 技术栈
+
+- 前端：React
+- 框架：Next.js
+- 样式：Tailwind CSS
+- 数据：使用模拟数据
+
+## 开始使用
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动开发服务器
+
+```bash
+npm run dev
+```
+
+访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+## 使用说明
+
+1. 在登录页面输入用户ID（1-8中的任意一个）
+2. 登录后可以查看：
+   - 个人交易数据
+   - 邀请的用户列表
+   - 返佣统计
+3. 点击"导出CSV"按钮可以导出邀请用户的返佣数据报表
+
+## 项目结构
+
+- `/app/api/*` - API路由
+- `/app/data/` - 模拟数据
+- `/app/dashboard/[uid]/` - 用户仪表盘页面
+- `/app/page.tsx` - 登录页面
+
+## 数据结构
+
+系统使用以下数据结构：
+
+- 用户数据：`uid`, `name`, `avatar`
+- 交易数据：`id`, `uid`, `amount`, `fee`, `timestamp`
+- 用户关系数据：`uid`, `inviter_uid`
+
+## 示例用户
+
+系统预设了8个测试用户，其中：
+
+- 用户1（张三）是顶级用户，邀请了用户2、3、4
+- 用户2（李四）邀请了用户5、6
+- 用户3（王五）邀请了用户7
+- 用户4（赵六）邀请了用户8
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
