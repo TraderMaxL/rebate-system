@@ -7,7 +7,8 @@ import {
   getInviter,
   getSecondLevelInviter,
   FIRST_LEVEL_REBATE_RATE, 
-  SECOND_LEVEL_REBATE_RATE 
+  SECOND_LEVEL_REBATE_RATE,
+  UserRelation
 } from '../../../data/mockData';
 
 // 获取用户统计数据
@@ -46,7 +47,7 @@ export async function GET(
     const directInvitedCount = directInvitedUsers.length;
     
     // 获取二级下级用户（下级邀请的用户）
-    const secondLevelInvitedUsers = [];
+    const secondLevelInvitedUsers: UserRelation[] = [];
     directInvitedUsers.forEach(relation => {
       const subInvited = userRelations.filter(r => r.inviter_uid === relation.uid);
       secondLevelInvitedUsers.push(...subInvited);
