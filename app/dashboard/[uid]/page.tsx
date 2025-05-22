@@ -13,21 +13,40 @@ interface InvitedUserData {
   user: User;
   tradeAmount: number;
   fees: number;
-  rebate: number;
+  firstLevelRebate: number;
+  subInvitedCount: number; 
+  secondLevelRebateFromSubUsers: number;
 }
 
 interface UserStats {
   totalTradeAmount: number;
   totalFees: number;
-  invitedCount: number;
+  directInvitedCount: number;
+  secondLevelInvitedCount: number;
+  totalInvitedCount: number;
+  firstLevelRebate: number;
+  secondLevelRebate: number;
   totalRebate: number;
+}
+
+interface InviterInfo {
+  firstLevel: User | null;
+  secondLevel: User | null;
+}
+
+interface RebateRates {
+  firstLevel: string;
+  secondLevel: string;
 }
 
 interface UserData {
   success: boolean;
   user: User;
+  inviterInfo: InviterInfo;
   stats: UserStats;
+  rebateRates: RebateRates;
   invitedUsers: InvitedUserData[];
+  recentRebates: any[];
 }
 
 export default function Dashboard({ params }: { params: { uid: string } }) {
@@ -71,13 +90,15 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
   const exportToCSV = () => {
     if (!userData) return;
     
-    const headers = ['用户ID', '用户名', '交易金额', '手续费', '返佣金额'];
+    const headers = ['用户ID', '用户名', '交易金额', '手续费', '一级返佣', '二级用户数', '二级返佣'];
     const rows = userData.invitedUsers.map(user => [
       user.user.uid,
       user.user.name,
       user.tradeAmount,
       user.fees,
-      user.rebate
+      user.firstLevelRebate,
+      user.subInvitedCount,
+      user.secondLevelRebateFromSubUsers
     ]);
     
     const csvContent = [
@@ -167,13 +188,22 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
           
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-gray-500">邀请人数</h2>
-            <p className="mt-2 text-2xl font-semibold text-gray-900">{userData.stats.invitedCount} 人</p>
+            <p className="mt-2 text-2xl font-semibold text-gray-900">{userData.stats.directInvitedCount} 人 (二级: {userData.stats.secondLevelInvitedCount})</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-gray-500">获得返佣</h2>
             <p className="mt-2 text-2xl font-semibold text-green-600">$ {formatNumber(userData.stats.totalRebate)}</p>
           </div>
+        </div>
+        
+        {/* 返佣比例信息 */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-sm font-medium text-gray-700 mb-2">返佣比例：</h2>
+          <p className="text-sm text-gray-600">
+            一级返佣：{userData.rebateRates?.firstLevel || '10%'} | 
+            二级返佣：{userData.rebateRates?.secondLevel || '5%'}
+          </p>
         </div>
         
         {/* 邀请用户列表 */}
@@ -188,7 +218,7 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
             </button>
           </div>
           
-          {userData.stats.invitedCount > 0 ? (
+          {userData.stats.directInvitedCount > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -196,7 +226,9 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">交易金额</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">手续费</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">返佣金额</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">一级返佣</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">二级用户</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">二级返佣</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -230,7 +262,13 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
                         $ {formatNumber(user.fees)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
-                        $ {formatNumber(user.rebate)}
+                        $ {formatNumber(user.firstLevelRebate)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.subInvitedCount} 人
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
+                        $ {formatNumber(user.secondLevelRebateFromSubUsers)}
                       </td>
                     </tr>
                   ))}
@@ -240,7 +278,7 @@ export default function Dashboard({ params }: { params: { uid: string } }) {
           ) : (
             <div className="py-12 text-center text-gray-500">
               <p>您还没有邀请用户</p>
-              <p className="mt-2 text-sm">邀请用户加入平台，获得他们交易手续费的20%作为返佣</p>
+              <p className="mt-2 text-sm">邀请用户加入平台，获得他们交易手续费的10%作为一级返佣，5%作为二级返佣</p>
             </div>
           )}
         </div>
